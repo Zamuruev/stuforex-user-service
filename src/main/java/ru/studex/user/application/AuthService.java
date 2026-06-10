@@ -59,7 +59,7 @@ public class AuthService {
                         ReferralEntity.builder()
                                 .inviterId(inviter.getId())
                                 .inviteeId(user.getId())
-                                .isActive(false)
+                                .isActive(true)
                                 .build()
                 );
             }
