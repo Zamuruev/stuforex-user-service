@@ -59,4 +59,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
             @org.springframework.data.repository.query.Param("q") String query,
             @org.springframework.data.repository.query.Param("role") String role,
             @org.springframework.data.repository.query.Param("isActive") Boolean isActive);
+
+    Optional<UserEntity> findByRefCode(String refCode);
 }

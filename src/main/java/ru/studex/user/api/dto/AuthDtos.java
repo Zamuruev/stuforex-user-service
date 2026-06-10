@@ -25,6 +25,7 @@ public class AuthDtos {
 
         private String fullName;
         private String role; // STUDENT or EXECUTOR
+        private String refCode;
     }
 
     @Data

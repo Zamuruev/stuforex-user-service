@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.studex.user.api.dto.AuthDtos;
 import ru.studex.user.api.exception.ApiException;
-import ru.studex.user.infrastructure.persistence.UserEntity;
-import ru.studex.user.infrastructure.persistence.UserJpaRepository;
-import ru.studex.user.infrastructure.persistence.XpEvent;
+import ru.studex.user.infrastructure.persistence.*;
 import ru.studex.user.infrastructure.security.JwtProvider;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -20,6 +19,7 @@ import java.util.UUID;
 public class AuthService {
 
     private final UserJpaRepository userRepository;
+    private final ReferralRepository referralRepository;
     private final XpService xpService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -47,6 +47,24 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
+
+        Optional<UserEntity> inviterOpt = userRepository.findByRefCode(request.getRefCode());
+
+        if (inviterOpt.isPresent()) {
+            UserEntity inviter = inviterOpt.get();
+
+            if (!inviter.getId().equals(user.getId())) {
+
+                referralRepository.save(
+                        ReferralEntity.builder()
+                                .inviterId(inviter.getId())
+                                .inviteeId(user.getId())
+                                .isActive(false)
+                                .build()
+                );
+            }
+        }
+
         log.info("Registered user: {} as {}", user.getEmail(), role);
 
         String token = jwtProvider.generateToken(user.getId(), user.getEmail(), user.getRole());
