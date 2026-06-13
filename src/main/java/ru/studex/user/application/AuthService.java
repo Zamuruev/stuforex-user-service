@@ -21,6 +21,7 @@ public class AuthService {
     private final UserJpaRepository userRepository;
     private final ReferralRepository referralRepository;
     private final XpService xpService;
+    private final NotificationService notificationService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final UserMapper userMapper;
@@ -62,6 +63,17 @@ public class AuthService {
                                 .isActive(true)
                                 .build()
                 );
+
+                try {
+                    notificationService.notifyReferralRegistered(
+                            inviter.getId(),
+                            user.getUsername()
+                    );
+                } catch (Exception e) {
+                    log.warn("Не удалось отправить уведомление о реферале inviterId={}: {}",
+                            inviter.getId(), e.getMessage());
+                }
+
             }
         }
 

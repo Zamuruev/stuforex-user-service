@@ -108,4 +108,27 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
         LIMIT :limit
     """, nativeQuery = true)
     List<Map<String, Object>> findUniversityStats(@Param("limit") int limit);
+
+    long countByRole(String role);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+
+    @Query(value = """
+        SELECT
+            u.id           AS userId,
+            u.username     AS username,
+            u.full_name    AS fullName,
+            u.anti_plagiat_requested_at AS requestedAt,
+            CASE
+                WHEN u.anti_plagiat_verified = true  THEN 'APPROVED'
+                WHEN u.anti_plagiat_verified = false THEN 'REJECTED'
+                ELSE 'PENDING'
+            END AS status
+        FROM users u
+        WHERE u.anti_plagiat_requested_at IS NOT NULL
+        ORDER BY u.anti_plagiat_requested_at DESC
+        LIMIT 100
+    """, nativeQuery = true)
+    List<Map<String, Object>> findAntiPlagiatRequests();
+
 }
