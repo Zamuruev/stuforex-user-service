@@ -73,6 +73,10 @@ public class AuthDtos {
         private Boolean phoneVerified;
         private Short courseYear;
         private Integer monthlyBudgetLimit;
+
+        private Boolean antiPlagiatVerified;
+        private String  antiPlagiatVerifiedAt;
+        private String  antiPlagiatRequestedAt;
     }
 
     @Data

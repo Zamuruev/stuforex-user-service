@@ -2,9 +2,11 @@ package ru.studex.user.infrastructure.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,4 +63,49 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
             @org.springframework.data.repository.query.Param("isActive") Boolean isActive);
 
     Optional<UserEntity> findByRefCode(String refCode);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.role = 'EXECUTOR' ORDER BY u.xpPoints DESC LIMIT :limit")
+    List<UserEntity> findTopByXp(@Param("limit") int limit);
+
+
+    /**
+     * Топ по выполненным заданиям.
+     * Если task-service — та же БД (схема tasks доступна), используй этот запрос.
+     * Если разные БД — удали метод и реализуй через HTTP в LeaderboardService.
+     */
+    @Query(value = """
+        SELECT
+            u.id                                        AS userId,
+            u.username                                  AS username,
+            u.full_name                                 AS fullName,
+            u.university                                AS university,
+            u.xp_points                                 AS xpPoints,
+            u.level                                     AS level,
+            u.anti_plagiat_verified                     AS antiPlagiatVerified,
+            COUNT(t.id)                                 AS completedTasks
+        FROM users u
+        LEFT JOIN tasks t ON t.executor_id = u.id AND t.status = 'DONE'
+        WHERE u.role = 'EXECUTOR'
+        GROUP BY u.id, u.username, u.full_name, u.university, u.xp_points, u.level, u.anti_plagiat_verified
+        ORDER BY completedTasks DESC
+        LIMIT :limit
+    """, nativeQuery = true)
+    List<Map<String, Object>> findTopByCompletedTasks(@Param("limit") int limit);
+
+    /** Статистика по университетам */
+    @Query(value = """
+        SELECT
+            university,
+            COUNT(*)       AS member_count,
+            SUM(xp_points) AS total_xp,
+            0              AS total_tasks,
+            0.0            AS avg_rating
+        FROM users
+        WHERE university IS NOT NULL
+          AND role = 'EXECUTOR'
+        GROUP BY university
+        ORDER BY total_xp DESC
+        LIMIT :limit
+    """, nativeQuery = true)
+    List<Map<String, Object>> findUniversityStats(@Param("limit") int limit);
 }

@@ -34,6 +34,18 @@ public class UserMapper {
         r.setMonthlyBudgetLimit(user.getMonthlyBudgetLimit());
         r.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
         r.setPhoneVerified(Boolean.TRUE.equals(user.getPhoneVerified()));
+
+        r.setAntiPlagiatVerified(user.getAntiPlagiatVerified());
+        r.setAntiPlagiatVerifiedAt(
+                user.getAntiPlagiatVerifiedAt() != null
+                        ? user.getAntiPlagiatVerifiedAt().toString()
+                        : null
+        );
+        r.setAntiPlagiatRequestedAt(
+                user.getAntiPlagiatRequestedAt() != null
+                        ? user.getAntiPlagiatRequestedAt().toString()
+                        : null
+        );
         return r;
     }
 }

@@ -124,6 +124,20 @@ public class UserEntity {
     @Column(name = "code_expires_at")
     private LocalDateTime codeExpiresAt;
 
+    /** Антиплагиат — null=на рассмотрении, true=одобрено, false=отклонено */
+    @Column(name = "anti_plagiat_verified")
+    private Boolean antiPlagiatVerified;
+
+    @Column(name = "anti_plagiat_verified_at")
+    private java.time.LocalDateTime antiPlagiatVerifiedAt;
+
+    @Column(name = "anti_plagiat_requested_at")
+    private java.time.LocalDateTime antiPlagiatRequestedAt;
+
+    /** Максимальное кол-во одновременных заданий */
+    @Column(name = "max_concurrent_tasks")
+    private Short maxConcurrentTasks;
+
     // ── Transient helpers ─────────────────────────────────────
 
     @Transient
