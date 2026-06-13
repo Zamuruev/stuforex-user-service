@@ -24,7 +24,7 @@ public class AuthDtos {
         private String username;
 
         private String fullName;
-        private String role; // STUDENT or EXECUTOR
+        private String role;
         private String refCode;
     }
 
@@ -69,6 +69,10 @@ public class AuthDtos {
         private String specialization;
         private String subscriptionPlan;
         private String refCode;
+        private Boolean emailVerified;
+        private Boolean phoneVerified;
+        private Short courseYear;
+        private Integer monthlyBudgetLimit;
     }
 
     @Data

@@ -30,6 +30,10 @@ public class UserMapper {
                 user.getSubscriptionPlan() != null ? user.getSubscriptionPlan() : "LITE"
         );
         r.setRefCode(user.getRefCode());
+        r.setCourseYear(user.getCourseYear());
+        r.setMonthlyBudgetLimit(user.getMonthlyBudgetLimit());
+        r.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
+        r.setPhoneVerified(Boolean.TRUE.equals(user.getPhoneVerified()));
         return r;
     }
 }

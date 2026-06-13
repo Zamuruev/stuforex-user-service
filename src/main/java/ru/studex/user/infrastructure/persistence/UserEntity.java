@@ -74,7 +74,6 @@ public class UserEntity {
 
     // ── Подписка ──────────────────────────────────────────────
 
-    /** LITE | BASE | PRO */
     @Column(name = "subscription_plan")
     @Builder.Default
     private String subscriptionPlan = "LITE";
@@ -82,12 +81,10 @@ public class UserEntity {
     @Column(name = "subscription_expires_at")
     private LocalDateTime subscriptionExpiresAt;
 
-    /** Сколько откликов исполнитель оставил в текущем месяце */
     @Column(name = "proposals_this_month")
     @Builder.Default
     private Integer proposalsThisMonth = 0;
 
-    /** Когда сбрасывать счётчик */
     @Column(name = "proposals_reset_at")
     private LocalDateTime proposalsResetAt;
 
@@ -95,9 +92,37 @@ public class UserEntity {
     @Builder.Default
     private Boolean isVerifiedSpecialist = false;
 
-    /** Реферальный код — первые 8 символов UUID, устанавливается при регистрации */
     @Column(name = "ref_code", unique = true)
     private String refCode;
+
+    // ── Верификация email / phone ─────────────────────────────
+
+    @Column(name = "course_year")
+    private Short courseYear;
+
+    /** Лимит трат студента в месяц (₽), null = без ограничения */
+    @Column(name = "monthly_budget_limit")
+    private Integer monthlyBudgetLimit;
+
+    @Column(name = "email_verified")
+    @Builder.Default
+    private Boolean emailVerified = false;
+
+    @Column(name = "phone_verified")
+    @Builder.Default
+    private Boolean phoneVerified = false;
+
+    /** 6-значный код для email */
+    @Column(name = "email_code", length = 6)
+    private String emailCode;
+
+    /** 6-значный код для телефона */
+    @Column(name = "phone_code", length = 6)
+    private String phoneCode;
+
+    /** Когда истекает код верификации */
+    @Column(name = "code_expires_at")
+    private LocalDateTime codeExpiresAt;
 
     // ── Transient helpers ─────────────────────────────────────
 
@@ -112,29 +137,26 @@ public class UserEntity {
         this.skillsCsv = (skills == null || skills.length == 0) ? null : String.join(",", skills);
     }
 
-    /** Лимит откликов по текущему плану. null = безлимит (PRO). */
     @Transient
     public Integer getProposalsLimit() {
         if (subscriptionPlan == null) return 5;
         return switch (subscriptionPlan) {
             case "BASE" -> 30;
-            case "PRO"  -> null;   // безлимит
-            default     -> 5;      // LITE
+            case "PRO"  -> null;
+            default     -> 5;
         };
     }
 
-    /** Лимит публикаций заданий для студентов по текущему плану. null = безлимит. */
     @Transient
     public Integer getTasksLimit() {
         if (subscriptionPlan == null) return 3;
         return switch (subscriptionPlan) {
             case "BASE" -> 8;
-            case "PRO"  -> null;  // безлимит
-            default     -> 3;     // LITE
+            case "PRO"  -> null;
+            default     -> 3;
         };
     }
 
-    /** Подписка ещё активна? */
     @Transient
     public boolean isSubscriptionActive() {
         if ("LITE".equals(subscriptionPlan)) return true;

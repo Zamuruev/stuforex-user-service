@@ -36,12 +36,30 @@ public class UserService {
         if (updates.containsKey("bio")) user.setBio((String) updates.get("bio"));
         if (updates.containsKey("university")) user.setUniversity((String) updates.get("university"));
         if (updates.containsKey("avatarUrl")) user.setAvatarUrl((String) updates.get("avatarUrl"));
-        if (updates.containsKey("phone")) user.setPhone((String) updates.get("phone"));
         if (updates.containsKey("telegram")) user.setTelegram((String) updates.get("telegram"));
         if (updates.containsKey("specialization")) user.setSpecialization((String) updates.get("specialization"));
         if (updates.containsKey("skills") && updates.get("skills") instanceof List<?> s) {
             String[] arr = s.stream().map(Object::toString).toArray(String[]::new);
             user.setSkillsArray(arr);
+        }
+        if (updates.containsKey("courseYear")) {
+            user.setCourseYear(updates.get("courseYear") != null
+                    ? Short.valueOf(updates.get("courseYear").toString())
+                    : null);
+        }
+        if (updates.containsKey("email")) {
+            String newEmail = (String) updates.get("email");
+            if (!newEmail.equals(user.getEmail())) {
+                user.setEmail(newEmail);
+                user.setEmailVerified(false);
+            }
+        }
+        if (updates.containsKey("phone")) {
+            String newPhone = (String) updates.get("phone");
+            if (!newPhone.equals(user.getPhone())) {
+                user.setPhone(newPhone);
+                user.setPhoneVerified(false);
+            }
         }
 
         return userMapper.toResponse(userRepository.save(user));
