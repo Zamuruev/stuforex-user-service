@@ -116,6 +116,11 @@ public class AuthService {
     public AuthDtos.UserResponse getMe(String userId) {
         UserEntity user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new ApiException("Пользователь не найден", 404));
+        
+        if (user.isDeleted() || Boolean.FALSE.equals(user.getIsActive())) {
+            throw new ApiException("Аккаунт деактивирован", 401);
+        }
+
         return userMapper.toResponse(user);
     }
 }

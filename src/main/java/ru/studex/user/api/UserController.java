@@ -1,5 +1,6 @@
 package ru.studex.user.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,6 +39,26 @@ public class UserController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/me/change-password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId,
+            @Valid @RequestBody AuthDtos.ChangePasswordRequest req) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        userService.changePassword(userId, req.newPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteAccount(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId,
+            @Valid @RequestBody AuthDtos.DeleteAccountRequest req) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        userService.deleteAccount(userId, req.password());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")

@@ -1,0 +1,3 @@
+ALTER TABLE chat_rooms ADD COLUMN IF NOT EXISTS task_status VARCHAR(20) DEFAULT 'ACTIVE';
+ALTER TABLE chat_rooms ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;
+UPDATE chat_rooms SET task_status = 'ACTIVE' WHERE task_status IS NULL;

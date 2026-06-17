@@ -138,6 +138,12 @@ public class UserEntity {
     @Column(name = "max_concurrent_tasks")
     private Short maxConcurrentTasks;
 
+    // Мягкое удаление
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean deleted = false;
+
+
     // ── Transient helpers ─────────────────────────────────────
 
     @Transient

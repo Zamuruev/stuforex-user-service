@@ -1,6 +1,8 @@
 package ru.studex.user.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.studex.user.api.dto.AuthDtos;
@@ -14,12 +16,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserJpaRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthDtos.UserResponse getById(String id) {
         UserEntity user = userRepository.findById(UUID.fromString(id))
@@ -186,5 +190,48 @@ public class UserService {
             user.setProposalsResetAt(LocalDateTime.now().plusMonths(1));
             userRepository.save(user);
         });
+    }
+
+    @Transactional
+    public void changePassword(String userId, String newPassword) {
+        UserEntity user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ApiException("Пользователь не найден", 404));
+
+        if (passwordEncoder.matches(newPassword, user.getPasswordHash())) {
+            throw new ApiException("Новый пароль совпадает с текущим", 400);
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        log.info("Password changed for user {}", userId);
+    }
+
+    @Transactional
+    public void deleteAccount(String userId, String password) {
+        UserEntity user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ApiException("Пользователь не найден", 404));
+
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new ApiException("Неверный пароль", 400);
+        }
+
+        user.setIsActive(false);
+        user.setDeleted(true);
+        user.setEmail("deleted_" + userId + "@deleted.studex");
+        user.setUsername("deleted_" + userId.substring(0, 8));
+        user.setFullName(null);
+        user.setPhone(null);
+        user.setTelegram(null);
+        user.setBio(null);
+        user.setAvatarUrl(null);
+        userRepository.save(user);
+
+        log.info("Account soft-deleted for user {}", userId);
+    }
+
+    private UserEntity findUser(String userId) {
+        return userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ApiException("Пользователь не найден", 404));
     }
 }

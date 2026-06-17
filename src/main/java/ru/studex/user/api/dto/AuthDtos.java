@@ -98,4 +98,16 @@ public class AuthDtos {
         private int page;
         private int size;
     }
+
+    public record ChangePasswordRequest(
+
+            @NotBlank(message = "Введите новый пароль")
+            @Size(min = 8, message = "Пароль должен быть не менее 8 символов")
+            String newPassword
+    ) {}
+
+    public record DeleteAccountRequest(
+            @NotBlank(message = "Введите пароль для подтверждения")
+            String password
+    ) {}
 }
