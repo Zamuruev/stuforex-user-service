@@ -35,10 +35,32 @@ spring:
       password: ${SPRING_REDIS_PASSWORD:studex_redis}
       timeout: 5000ms
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 110MB
+
+upload:
+  dir: ${UPLOAD_DIR:./uploads}
+
 jwt:
   secret: ${JWT_SECRET:studex_jwt_secret_key_min_32_chars_long_for_hs256}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: 604800000
+
+support:
+  groq:
+    # Получи бесплатный API-ключ на https://console.groq.com/keys
+    api-key: ${GROQ_API_KEY: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}
+    model: ${GROQ_MODEL:llama-3.3-70b-versatile}
+    max-tokens: 500
+    temperature: 0.3
+  ollama:
+    # Ollama запускается локально: https://ollama.com
+    # После установки: ollama pull nomic-embed-text
+    base-url: ${OLLAMA_URL:http://localhost:11434}
+    embedding-model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
 
 logging:
   level:

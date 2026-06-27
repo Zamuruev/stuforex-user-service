@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ru.studex.user.api.dto.AuthDtos;
 import ru.studex.user.api.exception.ApiException;
 import ru.studex.user.infrastructure.persistence.UserEntity;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserJpaRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final FileStorageService fileStorageService;
 
     public AuthDtos.UserResponse getById(String id) {
         UserEntity user = userRepository.findById(UUID.fromString(id))
@@ -60,9 +62,21 @@ public class UserService {
         }
         if (updates.containsKey("phone")) {
             String newPhone = (String) updates.get("phone");
-            if (!newPhone.equals(user.getPhone())) {
+            if (newPhone != null && !newPhone.equals(user.getPhone())) {
                 user.setPhone(newPhone);
                 user.setPhoneVerified(false);
+            }
+        }
+        if (updates.containsKey("username")) {
+            String newUsername = ((String) updates.get("username")).trim().toLowerCase();
+            if (!newUsername.isBlank() && !newUsername.equals(user.getUsername())) {
+                if (newUsername.length() < 3 || newUsername.length() > 30)
+                    throw new ApiException("Никнейм должен быть от 3 до 30 символов", 400);
+                if (!newUsername.matches("[a-z0-9_]+"))
+                    throw new ApiException("Никнейм может содержать только латинские буквы, цифры и _", 400);
+                if (userRepository.existsByUsername(newUsername))
+                    throw new ApiException("Этот никнейм уже занят", 409);
+                user.setUsername(newUsername);
             }
         }
 
@@ -228,6 +242,49 @@ public class UserService {
         userRepository.save(user);
 
         log.info("Account soft-deleted for user {}", userId);
+    }
+
+    @Transactional
+    public AuthDtos.UserResponse uploadAvatar(String userId, MultipartFile file) {
+        UserEntity user = findUser(userId);
+        // Delete old avatar file if stored locally
+        if (user.getAvatarUrl() != null && user.getAvatarUrl().startsWith("/uploads/")) {
+            fileStorageService.delete(user.getAvatarUrl());
+        }
+        String url = fileStorageService.storeAvatar(userId, file);
+        user.setAvatarUrl(url);
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public AuthDtos.UserResponse deleteAvatar(String userId) {
+        UserEntity user = findUser(userId);
+        if (user.getAvatarUrl() != null && user.getAvatarUrl().startsWith("/uploads/")) {
+            fileStorageService.delete(user.getAvatarUrl());
+        }
+        user.setAvatarUrl(null);
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public AuthDtos.UserResponse uploadCover(String userId, MultipartFile file) {
+        UserEntity user = findUser(userId);
+        if (user.getCoverUrl() != null && user.getCoverUrl().startsWith("/uploads/")) {
+            fileStorageService.delete(user.getCoverUrl());
+        }
+        String url = fileStorageService.storeCover(userId, file);
+        user.setCoverUrl(url);
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public AuthDtos.UserResponse deleteCover(String userId) {
+        UserEntity user = findUser(userId);
+        if (user.getCoverUrl() != null && user.getCoverUrl().startsWith("/uploads/")) {
+            fileStorageService.delete(user.getCoverUrl());
+        }
+        user.setCoverUrl(null);
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     private UserEntity findUser(String userId) {

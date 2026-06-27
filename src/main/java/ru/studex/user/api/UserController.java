@@ -2,10 +2,13 @@ package ru.studex.user.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.studex.user.api.dto.AuthDtos;
+import ru.studex.user.application.OnlinePresenceService;
 import ru.studex.user.application.UserService;
 import ru.studex.user.application.XpService;
 
@@ -19,6 +22,7 @@ public class UserController {
 
     private final UserService userService;
     private final XpService xpService;
+    private final OnlinePresenceService presenceService;
 
     @GetMapping("/{id}/public")
     public ResponseEntity<AuthDtos.UserResponse> getPublicProfile(@PathVariable String id) {
@@ -151,6 +155,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /** Количество онлайн пользователей (активны последние 5 минут) */
+    @GetMapping("/presence")
+    public ResponseEntity<Map<String, Object>> presence() {
+        return ResponseEntity.ok(Map.of("onlineCount", presenceService.getOnlineCount()));
+    }
+
     /** Обновить план подписки — вызывается payment-service */
     @PatchMapping("/{id}/subscription")
     public ResponseEntity<Void> updateSubscription(
@@ -158,5 +168,49 @@ public class UserController {
             @RequestBody java.util.Map<String, String> body) {
         userService.updateSubscription(id, body.get("subscriptionPlan"), body.get("subscriptionExpiresAt"));
         return ResponseEntity.ok().build();
+    }
+
+    /** Загрузить аватар */
+    @PostMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuthDtos.UserResponse> uploadAvatar(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId,
+            @RequestParam("file") MultipartFile file) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(userService.uploadAvatar(userId, file));
+    }
+
+    /** Удалить аватар */
+    @DeleteMapping("/me/avatar")
+    public ResponseEntity<AuthDtos.UserResponse> deleteAvatar(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(userService.deleteAvatar(userId));
+    }
+
+    /** Загрузить обложку профиля */
+    @PostMapping(value = "/me/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuthDtos.UserResponse> uploadCover(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId,
+            @RequestParam("file") MultipartFile file) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(userService.uploadCover(userId, file));
+    }
+
+    /** Удалить обложку профиля */
+    @DeleteMapping("/me/cover")
+    public ResponseEntity<AuthDtos.UserResponse> deleteCover(
+            @AuthenticationPrincipal(errorOnInvalidType = false) String userId) {
+
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(userService.deleteCover(userId));
+    }
+
+    /** Проверить онлайн-статус пользователя */
+    @GetMapping("/{id}/online")
+    public ResponseEntity<Map<String, Object>> isOnline(@PathVariable String id) {
+        return ResponseEntity.ok(Map.of("online", presenceService.isOnline(id)));
     }
 }

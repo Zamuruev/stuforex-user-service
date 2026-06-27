@@ -15,6 +15,7 @@ public class UserMapper {
         r.setUsername(user.getUsername());
         r.setFullName(user.getFullName());
         r.setAvatarUrl(user.getAvatarUrl());
+        r.setCoverUrl(user.getCoverUrl());
         r.setRole(user.getRole());
         r.setIsVerified(user.getIsVerified());
         r.setIsActive(user.getIsActive());

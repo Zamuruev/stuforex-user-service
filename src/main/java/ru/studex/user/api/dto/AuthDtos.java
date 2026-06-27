@@ -56,6 +56,7 @@ public class AuthDtos {
         private String username;
         private String fullName;
         private String avatarUrl;
+        private String coverUrl;
         private String role;
         private Boolean isVerified;
         private Boolean isActive;
