@@ -33,6 +33,7 @@ public class UserMapper {
         r.setRefCode(user.getRefCode());
         r.setCourseYear(user.getCourseYear());
         r.setMonthlyBudgetLimit(user.getMonthlyBudgetLimit());
+        r.setCoverPositionY(user.getCoverPositionY());
         r.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
         r.setPhoneVerified(Boolean.TRUE.equals(user.getPhoneVerified()));
 

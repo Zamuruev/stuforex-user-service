@@ -35,6 +35,10 @@ public class UserEntity {
     @Column(name = "cover_url")
     private String coverUrl;
 
+    @Column(name = "cover_position_y")
+    @Builder.Default
+    private Integer coverPositionY = 50;
+
     @Column(nullable = false)
     @Builder.Default
     private String role = "STUDENT";

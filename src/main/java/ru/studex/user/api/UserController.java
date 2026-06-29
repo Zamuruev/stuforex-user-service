@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -155,10 +156,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    /** Количество онлайн пользователей (активны последние 5 минут) */
+    /** Количество онлайн пользователей (активны последние 5 минут) и всего пользователей */
     @GetMapping("/presence")
     public ResponseEntity<Map<String, Object>> presence() {
-        return ResponseEntity.ok(Map.of("onlineCount", presenceService.getOnlineCount()));
+        return ResponseEntity.ok(Map.of(
+                "onlineCount", presenceService.getOnlineCount(),
+                "totalUsers", userService.getTotalUsersCount()
+        ));
     }
 
     /** Обновить план подписки — вызывается payment-service */
@@ -212,5 +216,55 @@ public class UserController {
     @GetMapping("/{id}/online")
     public ResponseEntity<Map<String, Object>> isOnline(@PathVariable String id) {
         return ResponseEntity.ok(Map.of("online", presenceService.isOnline(id)));
+    }
+
+    // ── Admin: редактирование чужих профилей ────────────────────────────────
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AuthDtos.UserResponse> adminUpdateProfile(
+            @PathVariable String id,
+            @RequestBody Map<String, Object> updates,
+            Authentication auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(userService.updateProfile(id, updates));
+    }
+
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuthDtos.UserResponse> adminUploadAvatar(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file,
+            Authentication auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(userService.uploadAvatar(id, file));
+    }
+
+    @DeleteMapping("/{id}/avatar")
+    public ResponseEntity<AuthDtos.UserResponse> adminDeleteAvatar(
+            @PathVariable String id,
+            Authentication auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(userService.deleteAvatar(id));
+    }
+
+    @PostMapping(value = "/{id}/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AuthDtos.UserResponse> adminUploadCover(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file,
+            Authentication auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(userService.uploadCover(id, file));
+    }
+
+    @DeleteMapping("/{id}/cover")
+    public ResponseEntity<AuthDtos.UserResponse> adminDeleteCover(
+            @PathVariable String id,
+            Authentication auth) {
+        if (!isAdmin(auth)) return ResponseEntity.status(403).build();
+        return ResponseEntity.ok(userService.deleteCover(id));
+    }
+
+    private boolean isAdmin(Authentication auth) {
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }

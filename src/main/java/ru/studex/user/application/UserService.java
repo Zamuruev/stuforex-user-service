@@ -67,6 +67,16 @@ public class UserService {
                 user.setPhoneVerified(false);
             }
         }
+        if (updates.containsKey("coverPositionY")) {
+            user.setCoverPositionY(updates.get("coverPositionY") != null
+                    ? ((Number) updates.get("coverPositionY")).intValue()
+                    : 50);
+        }
+        if (updates.containsKey("monthlyBudgetLimit")) {
+            user.setMonthlyBudgetLimit(updates.get("monthlyBudgetLimit") != null
+                    ? ((Number) updates.get("monthlyBudgetLimit")).intValue()
+                    : null);
+        }
         if (updates.containsKey("username")) {
             String newUsername = ((String) updates.get("username")).trim().toLowerCase();
             if (!newUsername.isBlank() && !newUsername.equals(user.getUsername())) {
@@ -285,6 +295,10 @@ public class UserService {
         }
         user.setCoverUrl(null);
         return userMapper.toResponse(userRepository.save(user));
+    }
+
+    public long getTotalUsersCount() {
+        return userRepository.countActiveUsers();
     }
 
     private UserEntity findUser(String userId) {
