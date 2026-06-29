@@ -1,0 +1,1 @@
+ALTER TABLE chat_rooms ADD COLUMN IF NOT EXISTS admin_id UUID;
