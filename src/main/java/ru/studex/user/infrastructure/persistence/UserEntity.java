@@ -52,6 +52,8 @@ public class UserEntity {
     private Boolean isActive = true;
 
     private String bio;
+
+    @Column(name = "university")
     private String university;
 
     @Column(name = "xp_points")
@@ -71,7 +73,6 @@ public class UserEntity {
 
     private String phone;
     private String telegram;
-    private String specialization;
 
     @Column(name = "last_daily_login")
     private LocalDate lastDailyLogin;
@@ -103,9 +104,6 @@ public class UserEntity {
     private String refCode;
 
     // ── Верификация email / phone ─────────────────────────────
-
-    @Column(name = "course_year")
-    private Short courseYear;
 
     /** Лимит трат студента в месяц (₽), null = без ограничения */
     @Column(name = "monthly_budget_limit")

@@ -131,4 +131,34 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
     """, nativeQuery = true)
     List<Map<String, Object>> findAntiPlagiatRequests();
 
+    @Query(value = """
+        SELECT u.* FROM users u
+        WHERE (:isActive IS NULL OR u.is_active = :isActive)
+          AND u.is_deleted = false
+          AND (
+              :q = ''
+              OR LOWER(u.username) LIKE LOWER(CONCAT('%', :q, '%'))
+              OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :q, '%'))
+          )
+        ORDER BY u.xp_points DESC
+        LIMIT :size OFFSET :offset
+        """, nativeQuery = true)
+    List<UserEntity> findPeople(
+            @Param("q") String q,
+            @Param("isActive") Boolean isActive,
+            @Param("size") int size,
+            @Param("offset") long offset);
+
+    @Query(value = """
+        SELECT COUNT(*) FROM users u
+        WHERE (:isActive IS NULL OR u.is_active = :isActive)
+          AND u.is_deleted = false
+          AND (
+              :q = ''
+              OR LOWER(u.username) LIKE LOWER(CONCAT('%', :q, '%'))
+              OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :q, '%'))
+          )
+        """, nativeQuery = true)
+    long countPeople(@Param("q") String q, @Param("isActive") Boolean isActive);
+
 }

@@ -177,9 +177,8 @@ public class ProfileService {
     }
 
     private boolean isProfileComplete(UserEntity u) {
-        return u.getFullName()  != null && !u.getFullName().isBlank() &&
-                u.getBio()       != null && !u.getBio().isBlank() &&
-                u.getUniversity()!= null && !u.getUniversity().isBlank();
+        return u.getFullName() != null && !u.getFullName().isBlank() &&
+                u.getBio()     != null && !u.getBio().isBlank();
     }
 
     // ── РЕФЕРАЛЬНАЯ ПРОГРАММА ─────────────────────────────────

@@ -62,6 +62,34 @@ support:
     base-url: ${OLLAMA_URL:http://localhost:11434}
     embedding-model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
 
+oauth:
+  redirect-base-url: ${OAUTH_REDIRECT_BASE_URL:http://localhost:8080}
+  frontend-url: ${OAUTH_FRONTEND_URL:http://localhost:5173}
+  sber:
+    client-id: ${SBER_CLIENT_ID:}
+    client-secret: ${SBER_CLIENT_SECRET:}
+    auth-url: https://online.sberbank.ru/CSAFront/oidc/authorize
+    token-url: https://online.sberbank.ru/CSAFront/oidc/token
+    userinfo-url: https://online.sberbank.ru/CSAFront/oidc/userinfo
+    scope: openid name email mobile
+    pkce: true
+  tbank:
+    client-id: ${TBANK_CLIENT_ID:}
+    client-secret: ${TBANK_CLIENT_SECRET:}
+    auth-url: https://id.tinkoff.ru/auth/authorize
+    token-url: https://id.tinkoff.ru/auth/token
+    userinfo-url: https://id.tinkoff.ru/userinfo/userinfo
+    scope: openid profile email phone
+    pkce: false
+  alfa:
+    client-id: ${ALFA_CLIENT_ID:}
+    client-secret: ${ALFA_CLIENT_SECRET:}
+    auth-url: https://id.alfabank.ru/oidc/authorize
+    token-url: https://id.alfabank.ru/oidc/token
+    userinfo-url: https://id.alfabank.ru/oidc/userinfo
+    scope: openid profile email phone
+    pkce: false
+
 logging:
   level:
     ru.studex: DEBUG

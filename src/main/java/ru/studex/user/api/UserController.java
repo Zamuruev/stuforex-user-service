@@ -66,6 +66,21 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/online-check")
+    public ResponseEntity<Map<String, Object>> onlineCheck(@RequestBody Map<String, List<String>> body) {
+        List<String> ids = body.getOrDefault("ids", List.of());
+        return ResponseEntity.ok(Map.of("onlineIds", presenceService.areOnline(ids)));
+    }
+
+    @GetMapping("/people")
+    public ResponseEntity<AuthDtos.AdminUserListResponse> getPeople(
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "24") int size,
+            @RequestParam(required = false) Boolean isActive) {
+        return ResponseEntity.ok(userService.getPeople(q, page, Math.min(size, 50), isActive));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<AuthDtos.UserResponse>> search(
             @RequestParam(defaultValue = "") String q,

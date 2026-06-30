@@ -26,7 +26,7 @@ public class LeaderboardService {
             row.put("userId",             u.getId().toString());
             row.put("username",           u.getUsername());
             row.put("fullName",           u.getFullName());
-            row.put("university",         u.getUniversity());
+
             row.put("xpPoints",           u.getXpPoints());
             row.put("level",              u.getLevel());
             row.put("completedTasks",     0);  // TODO: подтянуть из task-service

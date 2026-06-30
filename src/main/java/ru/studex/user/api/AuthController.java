@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.studex.user.api.dto.AuthDtos;
 import ru.studex.user.application.AuthService;
+import ru.studex.user.application.OnlinePresenceService;
 
 @Slf4j
 @RestController
@@ -17,6 +18,7 @@ import ru.studex.user.application.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final OnlinePresenceService presenceService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthDtos.AuthResponse> register(
@@ -38,5 +40,19 @@ public class AuthController {
     public ResponseEntity<AuthDtos.UserResponse> me(
             @AuthenticationPrincipal String userId) {
         return ResponseEntity.ok(authService.getMe(userId));
+    }
+
+    /** Heartbeat — продлевает TTL присутствия в Redis */
+    @PostMapping("/heartbeat")
+    public ResponseEntity<Void> heartbeat(@AuthenticationPrincipal String userId) {
+        presenceService.recordActivity(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    /** Logout — мгновенно убирает пользователя из онлайна */
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal String userId) {
+        if (userId != null) presenceService.removeActivity(userId);
+        return ResponseEntity.ok().build();
     }
 }

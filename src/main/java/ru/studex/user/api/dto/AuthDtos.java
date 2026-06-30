@@ -62,35 +62,32 @@ public class AuthDtos {
         private Boolean isVerified;
         private Boolean isActive;
         private String bio;
-        private String university;
         private Integer xpPoints;
         private Integer level;
         private String phone;
         private String telegram;
         private List<String> skills;
-        private String specialization;
         private String subscriptionPlan;
         private String refCode;
         private Boolean emailVerified;
         private Boolean phoneVerified;
-        private Short courseYear;
         private Integer monthlyBudgetLimit;
 
         private Boolean antiPlagiatVerified;
         private String  antiPlagiatVerifiedAt;
         private String  antiPlagiatRequestedAt;
+        private String  university;
+        private String  createdAt;
     }
 
     @Data
     public static class UpdateProfileRequest {
         private String fullName;
         private String bio;
-        private String university;
         private String avatarUrl;
         private String phone;
         private String telegram;
         private List<String> skills;
-        private String specialization;
     }
 
     @Data

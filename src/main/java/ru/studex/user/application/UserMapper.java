@@ -20,18 +20,15 @@ public class UserMapper {
         r.setIsVerified(user.getIsVerified());
         r.setIsActive(user.getIsActive());
         r.setBio(user.getBio());
-        r.setUniversity(user.getUniversity());
         r.setXpPoints(user.getXpPoints());
         r.setLevel(user.getLevel());
         r.setPhone(user.getPhone());
         r.setTelegram(user.getTelegram());
         r.setSkills(List.of(user.getSkills()));
-        r.setSpecialization(user.getSpecialization());
         r.setSubscriptionPlan(
                 user.getSubscriptionPlan() != null ? user.getSubscriptionPlan() : "LITE"
         );
         r.setRefCode(user.getRefCode());
-        r.setCourseYear(user.getCourseYear());
         r.setMonthlyBudgetLimit(user.getMonthlyBudgetLimit());
         r.setCoverPositionY(user.getCoverPositionY());
         r.setEmailVerified(Boolean.TRUE.equals(user.getEmailVerified()));
@@ -48,6 +45,8 @@ public class UserMapper {
                         ? user.getAntiPlagiatRequestedAt().toString()
                         : null
         );
+        r.setUniversity(user.getUniversity());
+        r.setCreatedAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null);
         return r;
     }
 }

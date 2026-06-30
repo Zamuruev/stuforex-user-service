@@ -1,0 +1,1 @@
+ALTER TABLE user_education ADD COLUMN IF NOT EXISTS course_year SMALLINT;

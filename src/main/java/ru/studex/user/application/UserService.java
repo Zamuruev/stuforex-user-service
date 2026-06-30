@@ -40,18 +40,11 @@ public class UserService {
 
         if (updates.containsKey("fullName")) user.setFullName((String) updates.get("fullName"));
         if (updates.containsKey("bio")) user.setBio((String) updates.get("bio"));
-        if (updates.containsKey("university")) user.setUniversity((String) updates.get("university"));
         if (updates.containsKey("avatarUrl")) user.setAvatarUrl((String) updates.get("avatarUrl"));
         if (updates.containsKey("telegram")) user.setTelegram((String) updates.get("telegram"));
-        if (updates.containsKey("specialization")) user.setSpecialization((String) updates.get("specialization"));
         if (updates.containsKey("skills") && updates.get("skills") instanceof List<?> s) {
             String[] arr = s.stream().map(Object::toString).toArray(String[]::new);
             user.setSkillsArray(arr);
-        }
-        if (updates.containsKey("courseYear")) {
-            user.setCourseYear(updates.get("courseYear") != null
-                    ? Short.valueOf(updates.get("courseYear").toString())
-                    : null);
         }
         if (updates.containsKey("email")) {
             String newEmail = (String) updates.get("email");
@@ -134,6 +127,20 @@ public class UserService {
                 .orElseThrow(() -> new ApiException("Пользователь не найден", 404));
         user.setIsActive(true);
         return userMapper.toResponse(userRepository.save(user));
+    }
+
+    public AuthDtos.AdminUserListResponse getPeople(String query, int page, int size, Boolean isActive) {
+        String q = (query != null) ? query.trim() : "";
+        long offset = (long) page * size;
+        List<AuthDtos.UserResponse> users = userRepository.findPeople(q, isActive, size, offset)
+                .stream().map(userMapper::toResponse).toList();
+        long total = userRepository.countPeople(q, isActive);
+        AuthDtos.AdminUserListResponse resp = new AuthDtos.AdminUserListResponse();
+        resp.setUsers(users);
+        resp.setTotal(total);
+        resp.setPage(page);
+        resp.setSize(size);
+        return resp;
     }
 
     public List<AuthDtos.UserResponse> getTopExecutors(int limit) {
