@@ -66,6 +66,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/batch-avatars")
+    public ResponseEntity<Map<String, String>> batchAvatars(@RequestBody Map<String, List<String>> body) {
+        List<String> ids = body.getOrDefault("ids", List.of());
+        return ResponseEntity.ok(userService.getBatchAvatars(ids));
+    }
+
     @PostMapping("/online-check")
     public ResponseEntity<Map<String, Object>> onlineCheck(@RequestBody Map<String, List<String>> body) {
         List<String> ids = body.getOrDefault("ids", List.of());

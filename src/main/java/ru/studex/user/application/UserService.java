@@ -87,6 +87,18 @@ public class UserService {
     }
 
     // Старый search — для совместимости
+    public Map<String, String> getBatchAvatars(List<String> ids) {
+        return ids.stream()
+                .map(id -> { try { return UUID.fromString(id); } catch (Exception e) { return null; } })
+                .filter(java.util.Objects::nonNull)
+                .flatMap(uuid -> userRepository.findById(uuid).stream())
+                .collect(java.util.stream.Collectors.toMap(
+                        u -> u.getId().toString(),
+                        u -> u.getAvatarUrl() != null ? u.getAvatarUrl() : "",
+                        (a, b) -> a
+                ));
+    }
+
     public List<AuthDtos.UserResponse> search(String query, String role) {
         String q = (query != null && !query.isBlank()) ? query : null;
         String r = (role != null && !role.isBlank()) ? role : null;
