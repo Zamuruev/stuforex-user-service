@@ -1,3 +1,29 @@
+-- Cross-service tables: chat-service
+CREATE TABLE IF NOT EXISTS chat_rooms (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id     UUID,
+    customer_id UUID,
+    executor_id UUID,
+    created_at  TIMESTAMP DEFAULT NOW(),
+    title       VARCHAR(100),
+    task_status VARCHAR(50) DEFAULT 'ACTIVE',
+    updated_at  TIMESTAMP,
+    admin_id    UUID
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    room_id      UUID,
+    sender_id    UUID,
+    content      TEXT NOT NULL,
+    message_type VARCHAR(50) DEFAULT 'TEXT',
+    is_read      BOOLEAN DEFAULT FALSE,
+    created_at   TIMESTAMP DEFAULT NOW(),
+    reply_to_id  UUID,
+    is_edited    BOOLEAN DEFAULT FALSE,
+    edited_at    TIMESTAMP
+);
+
 -- Название чата (кастомное, по умолчанию NULL — покажем название задания)
 ALTER TABLE chat_rooms ADD COLUMN IF NOT EXISTS title VARCHAR(100);
 

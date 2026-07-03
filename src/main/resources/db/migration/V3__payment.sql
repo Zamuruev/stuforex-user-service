@@ -1,3 +1,53 @@
+-- Cross-service tables: task-service
+CREATE TABLE IF NOT EXISTS categories (
+    id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name  VARCHAR(255),
+    slug  VARCHAR(255),
+    icon  VARCHAR(255),
+    color VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title        VARCHAR(255) NOT NULL,
+    description  TEXT NOT NULL,
+    customer_id  UUID,
+    executor_id  UUID,
+    category_id  UUID,
+    budget_min   DECIMAL(10,2),
+    budget_max   DECIMAL(10,2),
+    agreed_price DECIMAL(10,2),
+    deadline     TIMESTAMP,
+    status       VARCHAR(50) DEFAULT 'DRAFT',
+    subject      VARCHAR(255),
+    tags         TEXT[],
+    file_urls    TEXT[],
+    created_at   TIMESTAMP DEFAULT NOW(),
+    updated_at   TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS proposals (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id       UUID NOT NULL,
+    executor_id   UUID NOT NULL,
+    price         DECIMAL(10,2) NOT NULL,
+    message       TEXT,
+    delivery_days INTEGER,
+    status        VARCHAR(50) DEFAULT 'PENDING',
+    created_at    TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id     UUID NOT NULL,
+    reviewer_id UUID NOT NULL,
+    reviewee_id UUID NOT NULL,
+    rating      INTEGER NOT NULL,
+    comment     VARCHAR(1000),
+    created_at  TIMESTAMP DEFAULT NOW(),
+    UNIQUE (task_id, reviewer_id)
+);
+
 -- Планы подписки
 CREATE TABLE IF NOT EXISTS subscription_plans (
                                                   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
