@@ -204,9 +204,9 @@ public class VerificationService {
                 "</body></html>";
     }
 
-    // old CSS-class-based template removed — Gmail strips style blocks
+    // DEAD CODE START — delete this entire method if it causes issues
     @SuppressWarnings({"unused","all"})
-    private void oldTemplate() { String styles =
+    private void oldTemplate(String formattedCode, int ttlMinutes) { String styles =
                 "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');" +
                         "*{margin:0;padding:0;box-sizing:border-box}" +
                         "body{background:#080810;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;color:rgba(255,255,255,.92)}" +
