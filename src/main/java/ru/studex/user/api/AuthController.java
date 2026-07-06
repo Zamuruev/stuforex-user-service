@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 import ru.studex.user.api.dto.AuthDtos;
 import ru.studex.user.application.AuthService;
 import ru.studex.user.application.OnlinePresenceService;
+import ru.studex.user.application.VerificationService;
 
 @Slf4j
 @RestController
@@ -19,6 +21,29 @@ public class AuthController {
 
     private final AuthService authService;
     private final OnlinePresenceService presenceService;
+    private final VerificationService verificationService;
+
+    /** Отправить код на email ДО регистрации */
+    @PostMapping("/email/send-code")
+    public ResponseEntity<Map<String, String>> sendPreRegCode(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        if (email == null || email.isBlank())
+            return ResponseEntity.badRequest().body(Map.of("error", "Email обязателен"));
+        verificationService.sendPreRegCode(email.trim().toLowerCase());
+        return ResponseEntity.ok(Map.of("message", "Код отправлен на " + email));
+    }
+
+    /** Подтвердить email ДО регистрации */
+    @PostMapping("/email/verify-code")
+    public ResponseEntity<Map<String, Object>> verifyPreRegCode(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String code  = body.get("code");
+        if (email == null || code == null)
+            return ResponseEntity.badRequest().body(Map.of("error", "Email и код обязательны"));
+        boolean ok = verificationService.verifyPreRegCode(email.trim().toLowerCase(), code.trim());
+        if (!ok) return ResponseEntity.badRequest().body(Map.of("error", "Неверный или истёкший код"));
+        return ResponseEntity.ok(Map.of("verified", true));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthDtos.AuthResponse> register(

@@ -35,6 +35,18 @@ spring:
       password: ${SPRING_REDIS_PASSWORD:studex_redis}
       timeout: 5000ms
 
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:25}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          ssl:
+            enable: false
+
   servlet:
     multipart:
       enabled: true
