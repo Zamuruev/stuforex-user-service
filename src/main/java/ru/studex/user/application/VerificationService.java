@@ -157,7 +157,56 @@ public class VerificationService {
                 ? code.substring(0, 3) + " " + code.substring(3)
                 : code;
 
-        String styles =
+        return "<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/></head>" +
+                "<body style=\"margin:0;padding:0;background:#0a0a14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;\">" +
+                "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#0a0a14;\"><tr><td align=\"center\" style=\"padding:40px 16px;\">" +
+                "<div style=\"text-align:center;margin-bottom:28px;\"><span style=\"font-size:26px;font-weight:800;color:#8B6FE8;letter-spacing:-0.03em;\">stuforex</span></div>" +
+                "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width:520px;margin:0 auto;background:#11111f;border:1px solid rgba(139,111,232,0.2);border-radius:20px;overflow:hidden;\">" +
+                "<tr><td style=\"background:linear-gradient(135deg,#6EC6FF 0%,#8B6FE8 52%,#DB6FFF 100%);padding:36px 40px 32px;text-align:center;\">" +
+                "<div style=\"width:52px;height:52px;background:rgba(255,255,255,0.18);border-radius:14px;display:inline-block;margin-bottom:16px;line-height:52px;border:1px solid rgba(255,255,255,0.25);\">" +
+                "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"vertical-align:middle;\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"3\"/><polyline points=\"2,4 12,13 22,4\"/></svg>" +
+                "</div>" +
+                "<h1 style=\"margin:0 0 6px;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;\">Подтверждение email</h1>" +
+                "<p style=\"margin:0;font-size:13px;color:rgba(255,255,255,0.75);\">Используйте код ниже для завершения регистрации</p>" +
+                "</td></tr>" +
+                "<tr><td style=\"padding:36px 40px;\">" +
+                "<p style=\"margin:0 0 24px;font-size:15px;color:rgba(190,178,255,0.7);line-height:1.6;\">Привет! 👋<br/><br/>Вы указали этот адрес при регистрации на платформе <span style=\"color:rgba(255,255,255,0.92);font-weight:600;\">Stuforex</span>. Введите код ниже в форму на сайте.</p>" +
+                "<div style=\"background:rgba(139,111,232,0.08);border:1px solid rgba(110,198,255,0.2);border-radius:14px;padding:28px;text-align:center;margin:0 0 28px;\">" +
+                "<div style=\"font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;\">Ваш код подтверждения</div>" +
+                "<div style=\"font-size:42px;font-weight:800;letter-spacing:0.2em;color:#A78BFA;font-family:'Courier New',Courier,monospace;padding-left:0.2em;\">" + formattedCode + "</div>" +
+                "<div style=\"margin-top:10px;font-size:12px;color:rgba(255,255,255,0.3);\">Действителен " + ttlMinutes + " минут</div>" +
+                "</div>" +
+                "<hr style=\"border:none;border-top:1px solid rgba(110,198,255,0.1);margin:0 0 24px;\"/>" +
+                "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom:24px;\"><tr>" +
+                "<td width=\"44\" valign=\"top\"><div style=\"width:32px;height:32px;background:rgba(139,111,232,0.1);border:1px solid rgba(110,198,255,0.12);border-radius:9px;text-align:center;line-height:32px;\">" +
+                "<svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(110,198,255,0.8)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"vertical-align:middle;\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>" +
+                "</div></td>" +
+                "<td style=\"font-size:13px;color:rgba(190,178,255,0.6);line-height:1.55;\"><span style=\"color:rgba(255,255,255,0.85);font-weight:600;\">Никому не сообщайте этот код.</span><br/>Сотрудники Stuforex никогда не запрашивают коды.</td>" +
+                "</tr></table>" +
+                "<div style=\"text-align:center;margin:28px 0;\">" +
+                "<a href=\"" + SITE_URL + "/register\" style=\"display:inline-block;padding:14px 40px;border-radius:12px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;background:linear-gradient(135deg,#6EC6FF 0%,#8B6FE8 50%,#DB6FFF 100%);\">&#x41F;&#x435;&#x440;&#x435;&#x439;&#x442;&#x438; &#x43A; &#x440;&#x435;&#x433;&#x438;&#x441;&#x442;&#x440;&#x430;&#x446;&#x438;&#x438; &rarr;</a>" +
+                "</div>" +
+                "<div style=\"background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.18);border-radius:12px;padding:14px 16px;\">" +
+                "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td width=\"26\" valign=\"top\">" +
+                "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"rgba(244,63,94,0.8)\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg>" +
+                "</td><td style=\"font-size:12px;color:rgba(244,63,94,0.75);line-height:1.55;\">Если вы не запрашивали код — просто проигнорируйте это письмо.</td></tr></table>" +
+                "</div>" +
+                "</td></tr></table>" +
+                "<div style=\"text-align:center;padding:24px 0 0;\">" +
+                "<div style=\"font-size:15px;font-weight:800;color:#8B6FE8;margin-bottom:12px;\">stuforex</div>" +
+                "<div style=\"margin-bottom:12px;\">" +
+                "<a href=\"" + SITE_URL + "/privacy\" style=\"font-size:11px;color:rgba(110,198,255,0.5);text-decoration:none;margin:0 10px;\">Политика конфиденциальности</a>" +
+                "<a href=\"" + SITE_URL + "/help\" style=\"font-size:11px;color:rgba(110,198,255,0.5);text-decoration:none;margin:0 10px;\">Помощь</a>" +
+                "</div>" +
+                "<p style=\"font-size:11px;color:rgba(255,255,255,0.25);line-height:1.6;margin:0;\">&copy; 2025 Stuforex. Все права защищены.<br/>Это письмо отправлено автоматически — не отвечайте на него.</p>" +
+                "</div>" +
+                "</td></tr></table>" +
+                "</body></html>";
+    }
+
+    // old CSS-class-based template removed — Gmail strips style blocks
+    @SuppressWarnings({"unused","all"})
+    private void oldTemplate() { String styles =
                 "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');" +
                         "*{margin:0;padding:0;box-sizing:border-box}" +
                         "body{background:#080810;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-font-smoothing:antialiased;color:rgba(255,255,255,.92)}" +
@@ -198,12 +247,12 @@ public class VerificationService {
                         ".footer a{color:rgba(110,198,255,.55);text-decoration:none}" +
                         "@media(max-width:480px){.hero{padding:28px 24px 24px}.body{padding:28px 24px}.footer{padding:24px 24px 0}.code-value{font-size:30px}}";
 
-        return "<!DOCTYPE html>" +
+        String html = "<!DOCTYPE html>" +
                 "<html lang=\"ru\">" +
                 "<head>" +
                 "<meta charset=\"UTF-8\"/>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>" +
-                "<title>Stuforex \u2014 \u041a\u043e\u0434 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u044f</title>" +
+                "<title>Stuforex</title>" +
                 "<style>" + styles + "</style>" +
                 "</head>" +
                 "<body>" +
@@ -273,5 +322,6 @@ public class VerificationService {
                 "</div>" +
                 "</body>" +
                 "</html>";
+        System.out.println(html); // suppress unused warning
     }
 }
