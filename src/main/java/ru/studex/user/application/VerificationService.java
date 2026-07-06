@@ -170,7 +170,7 @@ public class VerificationService {
                 "<p style=\"margin:0;font-size:13px;color:rgba(255,255,255,0.75);\">Используйте код ниже для завершения регистрации</p>" +
                 "</td></tr>" +
                 "<tr><td style=\"padding:36px 40px;\">" +
-                "<p style=\"margin:0 0 24px;font-size:15px;color:rgba(190,178,255,0.7);line-height:1.6;\">Привет! 👋<br/><br/>Вы указали этот адрес при регистрации на платформе <span style=\"color:rgba(255,255,255,0.92);font-weight:600;\">Stuforex</span>. Введите код ниже в форму на сайте.</p>" +
+                "<p style=\"margin:0 0 24px;font-size:15px;color:rgba(190,178,255,0.7);line-height:1.6;\">Привет!<br/><br/>Вы указали этот адрес при регистрации на платформе <span style=\"color:rgba(255,255,255,0.92);font-weight:600;\">Stuforex</span>. Введите код ниже в форму на сайте.</p>" +
                 "<div style=\"background:rgba(139,111,232,0.08);border:1px solid rgba(110,198,255,0.2);border-radius:14px;padding:28px;text-align:center;margin:0 0 28px;\">" +
                 "<div style=\"font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;\">Ваш код подтверждения</div>" +
                 "<div style=\"font-size:42px;font-weight:800;letter-spacing:0.2em;color:#A78BFA;font-family:'Courier New',Courier,monospace;padding-left:0.2em;\">" + formattedCode + "</div>" +
